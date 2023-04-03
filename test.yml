@@ -1,0 +1,529 @@
+openapi: 3.0.0
+info:
+  title: Bonus Operations API for MobileAplication
+  description: |-
+    This microservice allows you to receive information about transactions in the MKB bonus
+  version: 1.0.0
+servers:
+  - url: https://TBD/api/v1
+tags:
+  - name: BonusOperation
+    description: Methods for working with bonus operations
+  - name: BonusOperationScreen
+    description: Methods for getting page models
+paths:
+  /screen/getBonusOperationsReport:
+    get:
+      tags:
+        - BonusOperationScreen
+      description: Model acquisition - Bonus transactions report
+      parameters:
+        - name: rid
+          in: query
+          description: User session parameter
+          required: true
+          schema:
+            type: string
+        - name: sid
+          in: query
+          description: User session parameter
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: API method name
+          required: true
+          schema:
+            type: string
+        - name: uid
+          in: query
+          description: User session parameter
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Bonus operations retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BonusOperationsReportScreenResponse"
+  /operations/getListOperation:
+    get:
+      tags:
+        - BonusOperation
+      description: Get a bonus operations for a given client and date range
+      parameters:
+        - name: dateFrom
+          in: query
+          description: Start date of the date range to retrieve bonus operations
+          required: true
+          schema:
+            type: string
+        - name: dateTo
+          in: query
+          description: End date of the date range to retrieve bonus operations
+          required: true
+          schema:
+            type: string
+        - name: rid
+          in: query
+          description: User session parameter
+          required: true
+          schema:
+            type: string
+        - name: sid
+          in: query
+          description: User session parameter
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: API method name
+          required: true
+          schema:
+            type: string
+        - name: uid
+          in: query
+          description: User session parameter
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Bonus operations retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationListResponse"
+  /operations/getOperation:
+    get:
+      tags:
+        - BonusOperation
+      description: Get a bonus operations for a unique operation ID
+      parameters:
+        - name: operationID
+          in: query
+          description: Unique operation ID
+          required: true
+          schema:
+            type: string
+        - name: rid
+          in: query
+          description: User session parameter
+          required: true
+          schema:
+            type: string
+        - name: sid
+          in: query
+          description: User session parameter
+          required: true
+          schema:
+            type: string
+        - name: type
+          in: query
+          description: API method name
+          required: true
+          schema:
+            type: string
+        - name: uid
+          in: query
+          description: User session parameter
+          required: true
+          schema:
+            type: string
+      responses:
+        200: 
+          description: Bonus operation retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExpandedOperationResponse"
+components:
+  schemas:
+    BonusOperationsResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        messageTitle:
+          type: string
+          example: ""
+        message:
+          type: string
+          example: ""
+        rid:
+          type: string
+          example: "AMxVO8C2"
+        operations:
+          type: array
+          items:
+            $ref: "#/components/schemas/BonusOperation"
+    BonusOperation:
+      type: object
+      properties:
+        transactionDate:
+          type: string
+          format: date-time
+          example: "2022-12-31T00:00:00Z"
+        transactionDateString:
+          type: string
+          example: "31.12.2022"
+        accrueDate:
+          type: string
+          format: date-time
+          example: "2023-01-03T00:00:00Z"
+        accountingDate:
+          type: string
+          format: date-time
+          example: "2023-01-02T00:00:00Z"
+        operationName:
+          type: string
+          example: "Операция по карте 432498xxxxxx4877 (643\\\\AKYAR\\\\MAGNIT MM KUNAK,AKYAR,RU)"
+        enrollmentType:
+          type: string
+          example: "Обычные покупки"
+        bonusCategory:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "Домашние питомцы"
+            rate:
+              type: integer
+              example: 5
+        accrualRestriction:
+          type: object
+          properties:
+            type:
+              type: integer
+              example: 1
+            template:
+              type: integer
+              example: 1
+            Value:
+              type: integer
+              example: 15000
+        amountOperation:
+          type: object
+          properties:
+            amount:
+              type: string
+              example: "565.43"
+            currency:
+              type: string
+              example: "RUR"
+        amountCard:
+          type: object
+          properties:
+            amount:
+              type: string
+              example: "-565.43"
+            currency:
+              type: string
+              example: "RUR"
+        cardNumber:
+          type: string
+          example: "432498xxxxxx4877"
+        mccCode:
+          type: integer
+          example: 5411
+        merchName:
+          type: string
+          example: "MAGNIT MM KUNAK"
+        auth:
+          type: boolean
+          example: true
+        rate:
+          type: string
+          example: ""
+        value:
+          type: object
+          properties:
+            amount:
+              type: string
+              example: "2"
+            currency:
+              type: string
+              example: ""
+    BonusOperationsReportScreenResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        messageTitle:
+          type: string
+          example: ""
+        message:
+          type: string
+          example: ""
+        rid:
+          type: string
+          example: "AMxVO8C2"
+        operationListPage:
+          type: object
+          properties:
+            title:
+              type: string
+              description: "Заполнить поле title из одноименного поля объекта operationListPage из словаря в WoodSide - MKB_Bonus/ScreensModel.json"
+              example: "Отчет по баллам"
+            filters:
+              type: array
+              description: "Объект содержащий в себе динамические фильтры"
+              items:
+                type: object
+                properties:
+                  enrollmentType:
+                    type: string
+                    description: "Параметр принимает в себя одно из двух значений \"enrollment\"(При зачислении баллов) || \"accrual\"(При спсиании баллов)"
+                    example: "enrollment"
+                  name:
+                    type: string
+                    description: "Заполняется уникальными значениями парметра \"enrollmentType\" из ответа сервиса MKBO_GET_BONUS_OPERATIONS_LIST_MKBO2MCBBO"
+                    example: "Обычные покупки"
+            operationsList:
+              type: array
+              items:
+                $ref: "#/components/schemas/ShortOperation"
+    OperationListResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        messageTitle:
+          type: string
+          example: ""
+        message:
+          type: string
+          example: ""
+        rid:
+          type: string
+          example: "AMxVO8C2"
+        operationListPage:
+          type: object
+          properties:
+            filters:
+              type: array
+              items:
+                type: object
+                properties:
+                  enrollmentType:
+                    type: string
+                    example: "enrollment"
+                  name:
+                    type: string
+                    example: "Обычные покупки"
+            operationsList:
+              type: array
+              items:
+                $ref: "#/components/schemas/ShortOperation"
+    ShortOperation:
+      type: object
+      description: "Объект описывающий операцию, для списка на странице отчета по МКБ бонус"
+      properties:
+        operationID:
+          type: string
+          description: "Заполняется значением парметра \"operationID\" из ответа сервиса MKBO_GET_BONUS_OPERATIONS_LIST_MKBO2MCBBO"
+          example: "12312"
+        transactionDate:
+          type: string
+          description: "Заполняется значением парметра \"transactionDate\" из ответа сервиса MKBO_GET_BONUS_OPERATIONS_LIST_MKBO2MCBBO"
+          format: date-time
+          example: "2022-12-31T00:00:00Z"
+        merchName:
+          type: string
+          description: "Заполняется значением парметра \"merchName\" из ответа сервиса MKBO_GET_BONUS_OPERATIONS_LIST_MKBO2MCBBO"
+          example: "Заповедник"
+        icon:
+          type: object
+          description: "Объект иконки бонусной операции заполняется на основании полей \"merchName\" или \"bonusCategory.name\""
+          properties:
+            id:
+              type: string
+              description: "Если заполнено поле \"merchName\" то заполняем это поле наименование мерчанта, иначе заполняем id бонусной категории"
+              example: "Заповедник"
+            dictionary:
+              type: string
+              description: "Если заполнено поле \"merchName\" то заполняем это поле наименование директории иконок мерчанта, иначе заполняем названием директории, где лежат иконки бонусных категорий"
+              example: "merch"
+        auth:
+          type: boolean
+          description: "Заполняется значением парметра \"auth\" из ответа сервиса MKBO_GET_BONUS_OPERATIONS_LIST_MKBO2MCBBO"
+          example: true
+        enrollmentType:
+          type: string
+          description: "Заполняется значением парметра \"enrollmentType\" из ответа сервиса MKBO_GET_BONUS_OPERATIONS_LIST_MKBO2MCBBO"
+          example: "Обычные покупки"
+        rate:
+          type: integer
+          description: "Заполняется значением парметра \"bonusCategory.rate\" из ответа сервиса MKBO_GET_BONUS_OPERATIONS_LIST_MKBO2MCBBO"
+          example: 5
+        amountCard:
+          type: object
+          description: "Объект содержащий информацию о сумме операции в валюте"
+          properties:
+            amount:
+              type: string
+              description: "Заполняется значением парметра \"amountOperation.amount\" из ответа сервиса MKBO_GET_BONUS_OPERATIONS_LIST_MKBO2MCBBO"
+              example: "-565.43"
+            currency:
+              type: string
+              description: "Заполняется значением парметра \"amountOperation.currency\" из ответа сервиса MKBO_GET_BONUS_OPERATIONS_LIST_MKBO2MCBBO"
+              example: "RUR"
+        bonusValue:
+          type: object
+          description: "Объект содержащий информацию о сумме операции в бонусах"
+          properties:
+            amount:
+              type: string
+              description: "Заполняется значением парметра \"bonusValue.amount\" из ответа сервиса MKBO_GET_BONUS_OPERATIONS_LIST_MKBO2MCBBO"
+              example: "+140"
+            icon:
+              type: object
+              description: "Объект опсиывающий иконку баллов"
+              properties:
+                id:
+                  type: string
+                  description: "Id иконки"
+                  example: "dimond"
+                dictionary:
+                  type: string
+                  description: "Директория иконки"
+                  example: "icon"
+    ExpandedOperationResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+        messageTitle:
+          type: string
+          example: ""
+        message:
+          type: string
+          example: ""
+        rid:
+          type: string
+          example: "AMxVO8C2"
+        ExpandedOperation:
+          $ref: "#/components/schemas/ExpandedOperation"
+    ExpandedOperation:
+      type: object
+      description: "Объект содержащий расширенную операцию об информации"
+      properties:
+        operationID:
+          type: string
+          description: "Заполянется значением поля \"operationID\" ответа сервиса MKBO_GET_BONUS_OPERATION_MKBO2MCBBO"
+          example: "12123"
+        header:
+          type: object
+          description: "Объект содержащий ифномрацию для отрисовки хедера расширинной операции"
+          properties:
+            icon:
+              type: object
+              description: "Объект иконки бонусной операции заполняется на основании полей \"merchName\" или \"bonusCategory.name\""
+              properties:
+                id:
+                  type: string
+                  description: "Если заполнено поле \"merchName\" то заполняем это поле наименование мерчанта, иначе заполняем id бонусной категории"
+                dictionary:
+                  type: string
+                  description: "Если заполнено поле \"merchName\" то заполняем это поле наименование директории иконок мерчанта, иначе заполняем названием директории, где лежат иконки бонусных категорий"
+            bonusValue:
+              type: string
+              description: "Заполянется конкатенацией строк \"bonusValue.amounth + баллов\" ответа сервиса MKBO_GET_BONUS_OPERATION_MKBO2MCBBO"
+              example: "+140 баллов"
+            merchName:
+              type: string
+              description: "Заполянется значением поля \"operationID\" ответа сервиса MKBO_GET_BONUS_OPERATION_MKBO2MCBBO"
+              example: "Заповедник"
+            operationState:
+              type: object
+              description: "Объект содержащий информацию об авторизации операции"
+              properties:
+                text:
+                  type: string
+                  description: "Содержание данного поля зависит от значения поля \"auth\", если значение false - \"Операция в обработке\", иначе \"Операция исполнена\""
+                  example: "Операция в обработке"
+                auth:
+                  type: boolean
+                  description: "Заполянется значением поля \"auth\" ответа сервиса MKBO_GET_BONUS_OPERATION_MKBO2MCBBO"
+                  example: false
+                icon:
+                  type: object
+                  description: "Объект картинки отображающей авторизацию операции, отображаем только если \"auth\" == false"
+                  properties:
+                    id:
+                      type: string
+                      description: "id иконки таймера"
+                      example: "timer"
+                    dictionary:
+                      type: string
+                      description: "Директоряи иконки таймера"
+                      example: "icon"
+        banners:
+          type: array
+          description: "Баннеры с ифнормацией дял клиента"
+          items:
+            type: object
+            description: "Опсиание баннера"
+            properties:
+              title:
+                type: string
+                description: "Заголовок баннера определяется на остнваии полей \"auth\" и \"enrollmentRestrictions\". Заполняется из спрвочника ограничений(в работе)"
+                example: "Сумма баллов предварительная"
+              subtitle:
+                type: string
+                description: "Основной текст баннера определяется на остнваии полей \"auth\" и \"enrollmentRestrictions\". Заполняется из спрвочника ограничений(в работе)"
+                example: "Итоговый расчет баллов будет проведен после обработки операции"
+              icon:
+                type: object
+                description: "Опциональная икнока на баннере наличие определяется из woodside"
+                properties:
+                  id:
+                    type: string
+                    example: "block"
+                  dictionary:
+                    type: string
+                    example: "icon"
+        buttons:
+          type: array
+          description: "Массив кнпок, доступных для операции заполянетя из woodside"
+          items:
+            type: object
+            description: "Объект кнопки"
+            properties:
+              title:
+                type: string
+                description: "Заголовок заполянется из woodside"
+                example: "Оспорить операцию"
+              icon:
+                type: object
+                description: "Икнока скрыть кнопку"
+                properties:
+                  id:
+                    type: string
+                    example: "hideButton"
+                  dictionary:
+                    type: string
+                    example: "icon"
+        params:
+          type: array
+          description: "Массив дополнительных параметров опреациии"
+          items:
+            type: object
+            description: "элемент массива"
+            properties:
+              title:
+                type: string
+                description:  "Заголовок парметра операции"
+                example: "Тип зачисления"
+              value:
+                type: string
+                description:  "Значение пармаетра операции"
+                example: "Обычные покупки"
